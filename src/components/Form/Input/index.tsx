@@ -1,38 +1,38 @@
-import React, { useState } from 'react';
-import { TextInputProps } from 'react-native';
-import { Control, Controller } from 'react-hook-form';
+import React, { useState } from "react";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import { TextInputProps } from "react-native";
 
 import {
   Container,
-  Label,
   Error,
-  InputContainer,
   FormInput,
+  Icon,
+  InputContainer,
+  Label,
   ToggleShowPassButton,
-  Icon
-} from './styles';
+} from "./styles";
 
-interface Props extends TextInputProps {
-  control: Control;
-  name: string;
+interface Props<T> extends TextInputProps {
+  control: Control<T>;
+  name: Path<T>;
   title: string;
-  error: string;
+  error?: string;
 }
 
-export function Input({
+export function Input<T extends FieldValues = FieldValues>({
   name,
   control,
   title,
   error,
   secureTextEntry,
   ...rest
-}: Props) {
+}: Props<T>) {
   const [passwordHidden, setPasswordHidden] = useState(true);
 
   return (
     <Container>
       <Label>{title}</Label>
-      {error && <Error>{error}</Error>}
+      {error ? <Error>{error}</Error> : null}
       <Controller
         name={name}
         control={control}
@@ -45,7 +45,9 @@ export function Input({
               secureTextEntry={secureTextEntry && passwordHidden}
             />
             {secureTextEntry && (
-              <ToggleShowPassButton onPress={() => setPasswordHidden(!passwordHidden)}>
+              <ToggleShowPassButton
+                onPress={() => setPasswordHidden(!passwordHidden)}
+              >
                 <Icon name={passwordHidden ? "eye-off" : "eye"} />
               </ToggleShowPassButton>
             )}
@@ -53,5 +55,5 @@ export function Input({
         )}
       />
     </Container>
-  )
+  );
 }
